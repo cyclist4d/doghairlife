@@ -47,7 +47,7 @@ with st.form("iron_dog_form"):
     ev_inches = st.number_input("Inches ", min_value=0, max_value=11, value=0, step=1, key="ev_in")
 
     st.subheader("Speed Retrieve")
-    sr_time = st.number_input("Time (seconds)", min_value=2.5, max_value=20.0, value=0, step=0.001, format="%.3f")
+    sr_time = st.number_input("Time (seconds)", min_value=2.5, max_value=20.0, value=2.5, step=0.001, format="%.3f")
 
     submitted = st.form_submit_button("Calculate Iron Dog Score")
 
