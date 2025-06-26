@@ -1,45 +1,46 @@
 import streamlit as st
-import pandas as pd
 from PIL import Image
 
-# --- Load the logo ---
+# ---- Load your logo ----
 logo = Image.open("logo.png")
 st.image(logo, width=180)
 st.markdown("<h1 style='text-align: center;'>Norbert's Free Iron Dog Calculator</h1>", unsafe_allow_html=True)
 
-# --- Load the Excel tables ---
-excel = pd.ExcelFile("2025 Iron Dog scores.xlsx")
-big_air_df = pd.read_excel(excel, sheet_name="Big Air")
-extreme_vertical_df = pd.read_excel(excel, sheet_name="Extreme Vertical")
-speed_retrieve_df = pd.read_excel(excel, sheet_name="Speed Retrieve")
+# ---- Lookup tables (copy full dicts from your GUI version!) ----
+BIG_AIR_POINTS = {
+    (16, 1): 908.11, (18, 6): 908.11, (31, 3): 1063.6, (40, 0): 1127.15, # ... (copy ALL from your script)
+    # ... etc ...
+}
+EXTREME_VERTICAL_POINTS = {
+    (4, 6): 788.13, (5, 8): 929.86, (8, 4): 1072.13, (13, 0): 1263.75,  # ... (copy ALL from your script)
+    # ... etc ...
+}
+SPEED_RETRIEVE_POINTS = [
+    (2.5, 1133.47), (3.832, 1090.22), (7.436, 951.57), (20.0, 17.07)  # ... (copy ALL from your script)
+    # ... etc ...
+]
 
-# --- Create lookup tables ---
 def get_big_air_points(feet, inches):
-    row = big_air_df[(big_air_df['BIG AIR'] == feet) & (big_air_df['Unnamed: 1'] == inches)]
-    if row.empty:
-        # fallback: find closest lower value
-        subset = big_air_df[(big_air_df['BIG AIR'] < feet) | ((big_air_df['BIG AIR'] == feet) & (big_air_df['Unnamed: 1'] <= inches))]
-        if subset.empty:
-            return 0.0
-        row = subset.iloc[[-1]]
-    return float(row['Unnamed: 2'].values[0])
+    possible = [(f, i) for (f, i) in BIG_AIR_POINTS if (f < feet) or (f == feet and i <= inches)]
+    if not possible:
+        return 0.0
+    max_ft_in = max(possible)
+    return BIG_AIR_POINTS[max_ft_in]
 
 def get_extreme_vertical_points(feet, inches):
-    row = extreme_vertical_df[(extreme_vertical_df['EXTREME VERTICAL'] == feet) & (extreme_vertical_df['Unnamed: 1'] == inches)]
-    if row.empty:
-        subset = extreme_vertical_df[(extreme_vertical_df['EXTREME VERTICAL'] < feet) | ((extreme_vertical_df['EXTREME VERTICAL'] == feet) & (extreme_vertical_df['Unnamed: 1'] <= inches))]
-        if subset.empty:
-            return 0.0
-        row = subset.iloc[[-1]]
-    return float(row['Unnamed: 2'].values[0])
+    possible = [(f, i) for (f, i) in EXTREME_VERTICAL_POINTS if (f < feet) or (f == feet and i <= inches)]
+    if not possible:
+        return 0.0
+    max_ft_in = max(possible)
+    return EXTREME_VERTICAL_POINTS[max_ft_in]
 
 def get_speed_retrieve_points(seconds):
-    row = speed_retrieve_df[speed_retrieve_df['SPEED RETRIEVE'] >= seconds].head(1)
-    if row.empty:
-        return float(speed_retrieve_df.iloc[-1]['Unnamed: 1'])
-    return float(row['Unnamed: 1'].values[0])
+    for sec, pts in SPEED_RETRIEVE_POINTS:
+        if seconds <= sec:
+            return pts
+    return SPEED_RETRIEVE_POINTS[-1][1]
 
-# --- Streamlit form UI ---
+# ---- Streamlit user interface ----
 with st.form("iron_dog_form"):
     st.subheader("Big Air")
     ba_feet = st.number_input("Feet (Big Air)", min_value=0, max_value=40, value=0, step=1)
