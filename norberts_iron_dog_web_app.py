@@ -4,7 +4,7 @@ from PIL import Image
 
 # ---- Load your logo ----
 logo = Image.open("logo.png")
-st.image(logo, width=180)
+st.image(logo, width=150)
 st.markdown("<h1 style='text-align: center;'>Norbert's Free Iron Dog Calculator</h1>", unsafe_allow_html=True)
 
 BIG_AIR_POINTS = {
