@@ -18140,7 +18140,7 @@ if submitted:
     total = ba_pts + ev_pts + sr_pts
 
     st.success("Results")
-    st.write(f"**Big Air:** {int(ba_feet)}' {int(ba_inches)}" → {ba_pts} points")
-    st.write(f"**Extreme Vertical:** {int(ev_feet)}' {int(ev_inches)}" → {ev_pts} points")
-    st.write(f"**Speed Retrieve:** {sr_time:.3f} sec → {sr_pts} points")
+    st.write(f"**Big Air:** {int(ba_feet)}' {int(ba_inches)}" = {ba_pts} points")
+    st.write(f"**Extreme Vertical:** {int(ev_feet)}' {int(ev_inches)}" = {ev_pts} points")
+    st.write(f"**Speed Retrieve:** {sr_time:.3f} sec = {sr_pts} points")
     st.markdown(f"<h2>Total Iron Dog Score: {total:.2f} points</h2>", unsafe_allow_html=True)
